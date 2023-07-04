@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 
 contract PunkNft is ERC721URIStorage {
-  using String for uint256;
+  using Strings for uint256;
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
@@ -27,16 +27,16 @@ contract PunkNft is ERC721URIStorage {
       abi.encodePacked(
         "data:image/svg+xml;base64",
         Base64.encode(svg)
-     );
-    )
+     )
+    );
   }
 
   function getLevels(uint256 tokenId) public view returns(string memory){
     uint256 level = tokenIdtoLevels[tokenId];
-    return levels.toString();
+    return level.toString();
   }
 
-  function getTTokenUri() public returns(string memory){
+  function getTokenURI(uint256 tokenId) public returns(string memory){
     bytes memory dataURI = abi.encodePacked(
       '{',
           '"name": "PunkNft #', tokenId.toString(), '",',
@@ -52,12 +52,21 @@ contract PunkNft is ERC721URIStorage {
   );
   }
 
-  function mint() {
+  function mint() public {
     _tokenIds.increment();
     uint256 newItemId = _tokenIds.current();
-    _safemint(msg.sender, newItemId);
+    _safeMint(msg.sender, newItemId);
     tokenIdtoLevels[newItemId] = 0;
-    
+    _setTokenURI(newItemId, getTokenURI(newItemId));
+  }
+
+  function train(uint256 tokenId) public {
+   require(_exists(tokenId), "Please use an existing token");
+   require(ownerOf(tokenId) == msg.sender, "you must own this token to train it");
+   uint256 currentLevel = tokenIdtoLevels[tokenId];
+   tokenIdtoLevels[tokenId] = currentLevel + 1;
+   _setTokenURI(tokenId, getTokenURI(tokenId));
+
 
   }
 
