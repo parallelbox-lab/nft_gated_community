@@ -15,7 +15,7 @@ contract PunkNft is ERC721URIStorage {
   
   }
 
-  function generateCharacter(uint256 tokenId ) public returns(string memory) {
+  function generateCharacter(uint256 tokenId ) public pure returns(string memory) {
     bytes memory svg = abi.encodePacked(
       '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350">',
       '<style>.base { fill: white; font-family: serif; font-size: 14px; }</style>',
@@ -36,7 +36,7 @@ contract PunkNft is ERC721URIStorage {
     return level.toString();
   }
 
-  function getTokenURI(uint256 tokenId) public returns(string memory){
+  function getTokenURI(uint256 tokenId) public pure returns(string memory){
     bytes memory dataURI = abi.encodePacked(
       '{',
           '"name": "PunkNft #', tokenId.toString(), '",',
